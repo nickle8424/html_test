@@ -1,9 +1,35 @@
+var jqueryFunction;
+
 var woodColors = {
    "Ebony": "#292117",
    "Jatoba": "#B56816",
    "Maple": "#FDE96D",
    "Purpleheart": "#AF0B7B",
    "Walnut": "#4B351A" };
+
+function drawGlueUp(){
+    var c = document.getElementById("glueUp");
+    var ctx = c.getContext("2d");
+    var tbl = document.getElementById("wood_list");
+    var row = tbl.getElementsByTagName("tr");
+    var rowLength = row.length;
+    var opt = document.getElementsByTagName("select");
+    // add for loop
+    var wood_rows = opt.length;
+    var planks = []
+
+    // Get number of planks
+    var planksheight = Math.floor(150/wood_rows)
+    for (var i=0; i< wood_rows; i++){
+        planks.push(opt[i].value);
+        ctx.fillStyle = opt[i].value;
+        ctx.fillRect(0,i*planksheight, 250,planksheight);
+    }
+    //console.log(planks);
+    //console.log(opt[0].options[opt.optionsIndex].text);
+    //var sel = opt[0].value;
+    //console.log(sel);
+}
 
 function addRow() {
     var table = document.getElementById("wood_list");
@@ -12,6 +38,8 @@ function addRow() {
     rm_button.onclick = remove_row;
 
     var select = document.createElement('select');
+    select.onchange = function(){drawGlueUp();};
+    //select.className = "wood_opt";
     for(var key in woodColors){
         select.appendChild(new Option(key, woodColors[key]));
     }
@@ -39,6 +67,7 @@ function addRow() {
 
     
     tr = document.createElement('tr');
+    tr.class = "woodRows";
     td = document.createElement('td');
 
     td.appendChild(rm_button)
@@ -49,6 +78,7 @@ function addRow() {
     td.appendChild(dn_button);
     tr.appendChild(td);
     table.append(tr);
+    drawGlueUp();
 }
 
 function createTable() {
@@ -75,6 +105,7 @@ add_button.addEventListener("click", function() {
 function remove_row(){
     var i = this.parentNode.parentNode.rowIndex;
     document.getElementById("wood_list").deleteRow(i);
+    drawGlueUp()
 }
 
 function move_up(){
@@ -93,19 +124,7 @@ function move_dn(){
     //document.getElementById("wood_list").deleteRow(i);
 }
 
-function drawGlueUp(){
-    var c = document.getElementById("glueUp");
-    var ctx = c.getContext("2d");
-    var tbl = document.getElementById("wood_list");
-    var rowLength = tbl.rows.length;
-    for (i =0; i < rowLength; i++){ 
-	var cells = tbl.rows.item(i).cells;
-	var cellLength = cells.length;
-	for (var j=0; j < cellLength; j++){
-	//ctx.fillStyle = data.select.value;
-	//ctx.fillRect(20,20,150,100);
-            console.log(cells.item(j));
-	}
-    }
-}
-drawGlueUp()
+
+//drawGlueUp()
+
+
