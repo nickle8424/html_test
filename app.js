@@ -7,9 +7,13 @@ var woodColors = {
    "Purpleheart": "#AF0B7B",
    "Walnut": "#4B351A" };
 
-function drawGlueUp(){
+function drawCanvas(){
     var c = document.getElementById("glueUp");
     var ctx = c.getContext("2d");
+    var cb = document.getElementById("cboard");
+    var cbtx = cb.getContext("2d");
+
+
     var tbl = document.getElementById("wood_list");
     var row = tbl.getElementsByTagName("tr");
     var rowLength = row.length;
@@ -17,13 +21,24 @@ function drawGlueUp(){
     // add for loop
     var wood_rows = opt.length;
     var planks = []
+    var flip_chk_bx = document.getElementById("flip_chk_box");
 
     // Get number of planks
     var planksheight = Math.floor(150/wood_rows)
+    var cbheight = Math.floor(350/wood_rows)
     for (var i=0; i< wood_rows; i++){
         planks.push(opt[i].value);
         ctx.fillStyle = opt[i].value;
-        ctx.fillRect(0,i*planksheight, 250,planksheight);
+        ctx.fillRect(0,i*planksheight, 300,planksheight);
+
+        //if (flip_chk_bx){
+        //    var a;
+        //}
+        //else{
+            planks.push(opt[i].value);
+            cbtx.fillStyle = opt[i].value;
+            cbtx.fillRect(0,i*cbheight, 600,cbheight);
+        //}
     }
     //console.log(planks);
     //console.log(opt[0].options[opt.optionsIndex].text);
@@ -38,7 +53,7 @@ function addRow() {
     rm_button.onclick = remove_row;
 
     var select = document.createElement('select');
-    select.onchange = function(){drawGlueUp();};
+    select.onchange = function(){drawCanvas();};
     //select.className = "wood_opt";
     for(var key in woodColors){
         select.appendChild(new Option(key, woodColors[key]));
@@ -78,7 +93,7 @@ function addRow() {
     td.appendChild(dn_button);
     tr.appendChild(td);
     table.append(tr);
-    drawGlueUp();
+    drawCanvas();
 }
 
 function createTable() {
@@ -105,26 +120,26 @@ add_button.addEventListener("click", function() {
 function remove_row(){
     var i = this.parentNode.parentNode.rowIndex;
     document.getElementById("wood_list").deleteRow(i);
-    drawGlueUp()
+    drawCanvas()
 }
 
 function move_up(){
-    var idx = this.parentNode.parentNode.rowIndex;
-    var sct_idx = this.parentNode.parentNode.sectionRowIndex;
-    console.log(idx)
-    console.log(sct_idx)
-    console.log(this.parentNode.parentNode.cells)
-    console.log(this.parentNode.data)
-    //data1 = document.getElementById("wood_list").data(i);
-    //data2 = document.getElementById("wood_list").data(i+1);
+    var row = this.parentNode.parentNode;
+    var sibling = row.previousElementSibling;
+    var par = row.parentNode;
+    par.insertBefore(row, sibling);
+    drawCanvas()
 }
 
 function move_dn(){
-    var i = this.parentNode.parentNode.rowIndex;
-    //document.getElementById("wood_list").deleteRow(i);
+    var row = this.parentNode.parentNode;
+    var sibling = row.nextElementSibling;
+    var par = row.parentNode;
+    par.insertBefore(sibling, row);
+    drawCanvas()
 }
 
 
-//drawGlueUp()
+//drawCanvas()
 
 
