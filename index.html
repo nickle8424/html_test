@@ -8,7 +8,7 @@
     <body>
         <input id="cbLength" min="0" type="number" onchange="updateLength();" value="15">Cutting Board Length </input></br>
         <input id="cbWidth" min="0" type="number" readonly="readonly" >Cutting Board Width </input></br>
-        <input id="plkHeight" min="0" type="number" step=".25" value=".75">Plank Board height </input></br>
+        <input id="plkHeight" min="0" type="number" step=".25" value=".75" onchange="updatePlkHeight();">Plank Board height </input></br>
         <table id="wood_list"> </table >
         <button id="add_wood" type="button"> Add Wood</button> </br>
         <input id="flip_chk_box" type="checkbox" value="true" checked onchange="drawCanvas();">Alternate Cuts</input></br>

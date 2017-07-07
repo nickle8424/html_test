@@ -1,7 +1,9 @@
 var jqueryFunction;
 
 var plank = {
-    numBoards:1,
+    len: 15,
+    plkHeight: .75,
+    numBoards: 1,
     width : 11,
     height: 2,
     boards: [],
@@ -16,6 +18,7 @@ var woodColors = {
 
 function updatePlank(){
     updateWidth();
+    updateLength();
     // get Board order and widths
     //input_sz = document.getElementsByClassName("size");
     //var width = 0;
@@ -30,7 +33,12 @@ function updatePlank(){
 }
 function updateLength(){
     var len = document.getElementById("cbLength");
-    plank.Length = len;
+    plank.len = len.valueAsNumber;
+}
+
+function updatePlkHeight(){
+    var plHeight = document.getElementById("plkHeight");
+    plank.plkHeight = plHeight.valueAsNumber;
 }
 
 function updateWidth(){
@@ -68,7 +76,8 @@ function drawCanvas(){
     // Get number of planks
     var planksheight = Math.floor(150/wood_rows)
     var cbheight = Math.floor(350/wood_rows)
-    var numStrips = Math.ceil(plank.length/plank.pklHeight);
+    var cblen = Math.floor(600/wood_rows)
+    var numStrips = Math.ceil(plank.len/plank.plkHeight);
     for (var i=0; i< wood_rows; i++){
         planks.push(opt[i].value);
         ctx.fillStyle = opt[i].value;
@@ -76,10 +85,24 @@ function drawCanvas(){
 
         if (flip_chk_bx.checked){
             for (var j=0; j < numStrips; j++){ 
-                planks.push(opt[i].value);
+                var x = j*numStrips;
+                var endX = (j+1) * numStrips;
                 cbtx.fillStyle = opt[i].value;
-                cbtx.fillRect(0,i*planksheight, 600,planksheight);
+                cbtx.fillRect(x,i*planksheight, endX, planksheight);
                 //cbtx.fillRect(0,i*cbheight, 0,cbheight);
+                console.log(x, i, endX, planksheight)
+                if (j%2 == 0 || opt.length ==1){
+                    cbtx.fillStyle = opt[i].value;
+                    cbtx.fillRect(x, i*planksheight, endX, planksheight);
+                }
+                else {
+                    var flpSelect = opt.length - i;
+                    console.log(flpSelect);
+                    console.log(opt.length);
+                    //console.log(opt[flpSelect].value);
+                    cbtx.fillStyle = opt[flpSelect-1].value;
+                    cbtx.fillRect(x, i*planksheight, endX, planksheight);
+                }
             }
         }
         else{
