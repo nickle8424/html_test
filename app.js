@@ -1,5 +1,12 @@
 var jqueryFunction;
 
+var plank = {
+    numBoards:1,
+    width : 11,
+    height: 2,
+    boards: [],
+    boardWidth:[] };
+
 var woodColors = {
    "Ebony": "#292117",
    "Jatoba": "#B56816",
@@ -7,7 +14,42 @@ var woodColors = {
    "Purpleheart": "#AF0B7B",
    "Walnut": "#4B351A" };
 
+function updatePlank(){
+    updateWidth();
+    // get Board order and widths
+    //input_sz = document.getElementsByClassName("size");
+    //var width = 0;
+    //planks.boards = []
+    //for (var i =0; i < input_sz.length; i++ ){
+    //    planks.boardsWidth.push(input_sz[i].valueAsNumber;
+    //    //console.log(input_sz[i]);
+    //    width += input_sz[i].valueAsNumber;
+    //}
+
+    //plank.width = cbWidth();
+}
+function updateLength(){
+    var len = document.getElementById("cbLength");
+    plank.Length = len;
+}
+
+function updateWidth(){
+    input_sz = document.getElementsByClassName("size");
+    var width = 0;
+    plank.boards = []
+    for (var i =0; i < input_sz.length; i++ ){
+        plank.boardWidth.push(input_sz[i].valueAsNumber);
+        //console.log(input_sz[i]);
+        width += input_sz[i].valueAsNumber;
+    }
+    document.getElementById('cbWidth').value = width;
+    plank.width = width;
+}
+
+
 function drawCanvas(){
+    updatePlank();
+
     var c = document.getElementById("glueUp");
     var ctx = c.getContext("2d");
     var cb = document.getElementById("cboard");
@@ -26,21 +68,28 @@ function drawCanvas(){
     // Get number of planks
     var planksheight = Math.floor(150/wood_rows)
     var cbheight = Math.floor(350/wood_rows)
+    var numStrips = Math.ceil(plank.length/plank.pklHeight);
     for (var i=0; i< wood_rows; i++){
         planks.push(opt[i].value);
         ctx.fillStyle = opt[i].value;
         ctx.fillRect(0,i*planksheight, 300,planksheight);
 
-        //if (flip_chk_bx){
-        //    var a;
-        //}
-        //else{
+        if (flip_chk_bx.checked){
+            for (var j=0; j < numStrips; j++){ 
+                planks.push(opt[i].value);
+                cbtx.fillStyle = opt[i].value;
+                cbtx.fillRect(0,i*planksheight, 600,planksheight);
+                //cbtx.fillRect(0,i*cbheight, 0,cbheight);
+            }
+        }
+        else{
             planks.push(opt[i].value);
             cbtx.fillStyle = opt[i].value;
             cbtx.fillRect(0,i*cbheight, 600,cbheight);
-        //}
+        }
     }
     //console.log(planks);
+    //
     //console.log(opt[0].options[opt.optionsIndex].text);
     //var sel = opt[0].value;
     //console.log(sel);
@@ -60,9 +109,11 @@ function addRow() {
     }
     var size_num = document.createElement("input");
     size_num.type = "number";
-    size_num.name = "size";
+    size_num.className += "size";
+    size_num.value = "1";
     size_num.step = ".25";
     size_num.min = "0";
+    size_num.onchange= function(){updateWidth();};
 
     var up_button = document.createElement("button");
     up_button.innerHTML = "Move Up";
@@ -127,7 +178,12 @@ function move_up(){
     var row = this.parentNode.parentNode;
     var sibling = row.previousElementSibling;
     var par = row.parentNode;
-    par.insertBefore(row, sibling);
+    try {
+        par.insertBefore(row, sibling);
+    }
+    catch (err) {
+        ;
+    }
     drawCanvas()
 }
 
@@ -135,7 +191,13 @@ function move_dn(){
     var row = this.parentNode.parentNode;
     var sibling = row.nextElementSibling;
     var par = row.parentNode;
-    par.insertBefore(sibling, row);
+    try  {
+        par.insertBefore(sibling, row);
+    } catch (err){
+       ; 
+    }
+
+    updateWidth();
     drawCanvas()
 }
 
