@@ -7,7 +7,9 @@ var plank = {
     width : 11,
     height: 2,
     boards: [],
-    boardWidth:[] };
+    boardWidth:[],
+    pxlLength: 1,
+    pxlWidth: 1};
 
 var woodColors = {
    "Ebony": "#292117",
@@ -15,6 +17,10 @@ var woodColors = {
    "Maple": "#FDE96D",
    "Purpleheart": "#AF0B7B",
    "Walnut": "#4B351A" };
+
+function inchToPxls( inch) {
+    return inch*15;
+}
 
 function updatePlank(){
     updateWidth();
@@ -34,6 +40,7 @@ function updatePlank(){
 function updateLength(){
     var len = document.getElementById("cbLength");
     plank.len = len.valueAsNumber;
+    plank.pxlLength = inchToPxls(plank.len);
 }
 
 function updatePlkHeight(){
@@ -52,6 +59,7 @@ function updateWidth(){
     }
     document.getElementById('cbWidth').value = width;
     plank.width = width;
+    plank.pxlWidth = inchToPxls(plank.width);
 }
 
 
@@ -62,6 +70,12 @@ function drawCanvas(){
     var ctx = c.getContext("2d");
     var cb = document.getElementById("cboard");
     var cbtx = cb.getContext("2d");
+    
+    c.height = plank.pxlWidth;
+    c.width = plank.pxlLength;
+    cb.height = plank.pxlWidth;
+    cb.width = plank.pxlLength;
+    console.log(plank);
 
 
     var tbl = document.getElementById("wood_list");
@@ -74,48 +88,42 @@ function drawCanvas(){
     var flip_chk_bx = document.getElementById("flip_chk_box");
 
     // Get number of planks
-    var planksheight = Math.floor(150/wood_rows)
-    var cbheight = Math.floor(350/wood_rows)
-    var cblen = Math.floor(600/wood_rows)
-    var numStrips = Math.ceil(plank.len/plank.plkHeight);
+    var planksheight = Math.floor(plank.pxlWidth/wood_rows);
+    var cbheight = Math.floor(350/wood_rows);
+    var cblen = Math.floor(plank.len/wood_rows);
+    var numStrips = Math.ceil(plank.pxlLength/plank.plkHeight);
+
     for (var i=0; i< wood_rows; i++){
         planks.push(opt[i].value);
         ctx.fillStyle = opt[i].value;
-        ctx.fillRect(0,i*planksheight, 300,planksheight);
+        ctx.fillRect(0,i*plank.pxlWidth, plank.pxlLength, planksheight);
 
         if (flip_chk_bx.checked){
             for (var j=0; j < numStrips; j++){ 
                 var x = j*numStrips;
                 var endX = (j+1) * numStrips;
-                cbtx.fillStyle = opt[i].value;
-                cbtx.fillRect(x,i*planksheight, endX, planksheight);
+                //cbtx.fillStyle = opt[i].value;
+                //cbtx.fillRect(x,i*cbheight, endX, cbheight);
                 //cbtx.fillRect(0,i*cbheight, 0,cbheight);
-                console.log(x, i, endX, planksheight)
+                console.log(x, i*cbheight, endX, cbheight);
                 if (j%2 == 0 || opt.length ==1){
                     cbtx.fillStyle = opt[i].value;
-                    cbtx.fillRect(x, i*planksheight, endX, planksheight);
+                    cbtx.fillRect(x, i*plank.pxlWidth, endX, plank.pxlWidth);
                 }
                 else {
                     var flpSelect = opt.length - i;
-                    console.log(flpSelect);
-                    console.log(opt.length);
                     //console.log(opt[flpSelect].value);
                     cbtx.fillStyle = opt[flpSelect-1].value;
-                    cbtx.fillRect(x, i*planksheight, endX, planksheight);
+                    cbtx.fillRect(x, i*plank.pxlWidth, endX, plank.pxlWidth);
                 }
             }
         }
         else{
-            planks.push(opt[i].value);
+            //planks.push(opt[i].value);
             cbtx.fillStyle = opt[i].value;
-            cbtx.fillRect(0,i*cbheight, 600,cbheight);
+            cbtx.fillRect(0,i*plank.pxlWidth, plank.pxlLength , planksheight);
         }
     }
-    //console.log(planks);
-    //
-    //console.log(opt[0].options[opt.optionsIndex].text);
-    //var sel = opt[0].value;
-    //console.log(sel);
 }
 
 function addRow() {
@@ -167,6 +175,8 @@ function addRow() {
     td.appendChild(dn_button);
     tr.appendChild(td);
     table.append(tr);
+    plank.numBoards = table.rows.length -1;
+
     drawCanvas();
 }
 
